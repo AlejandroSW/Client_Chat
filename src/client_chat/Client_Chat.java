@@ -1,19 +1,9 @@
 package client_chat;
 
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.InetAddress;
-import java.net.Socket;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-
+import java.awt.*;
+import java.io.*;
+import java.net.*;
+import javax.swing.*;
 /**
  *
  * @author Alejandro
@@ -30,11 +20,11 @@ public class Client_Chat extends javax.swing.JFrame {
     public void clientStart() {
 
         //Connect to the server
-        clientArea.append(" Attempting connection... \n");
+        userArea.append(" Attempting connection... \n");
         
         try {
             connection = new Socket(InetAddress.getByName(serverIP),port);
-            clientArea.append(" Connected to: " + connection.getInetAddress().getHostName() + "\n");
+            userArea.append(" Connected to: " + connection.getInetAddress().getHostName() + "\n");
             output = new ObjectOutputStream(connection.getOutputStream());
             output.flush();
             input = new ObjectInputStream(connection.getInputStream());
@@ -59,7 +49,7 @@ public class Client_Chat extends javax.swing.JFrame {
             try {
                 while ((message = (String) input.readObject()) != null)              
                 {
-                    clientArea.append(message + "\n");
+                    userArea.append(message + "\n");
                     if (message.equals(" The Server is shutting all connections... "))
                     {
                         userText.setEditable(false);
@@ -88,7 +78,7 @@ public class Client_Chat extends javax.swing.JFrame {
     private void closeConnection() {
         
         sendMessage("is Disconnecting ");
-        clientArea.append(" Closing connection... \n ");
+        userArea.append(" Closing connection... \n ");
         userText.setEditable(false);
         try{
             output.close();
@@ -112,7 +102,7 @@ public class Client_Chat extends javax.swing.JFrame {
         sendButton = new javax.swing.JButton();
         connectButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        clientArea = new javax.swing.JTextArea();
+        userArea = new javax.swing.JTextArea();
         userText = new javax.swing.JTextField();
         nickname = new javax.swing.JTextField();
 
@@ -137,9 +127,9 @@ public class Client_Chat extends javax.swing.JFrame {
             }
         });
 
-        clientArea.setColumns(20);
-        clientArea.setRows(5);
-        jScrollPane1.setViewportView(clientArea);
+        userArea.setColumns(20);
+        userArea.setRows(5);
+        jScrollPane1.setViewportView(userArea);
 
         userText.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -250,12 +240,12 @@ public class Client_Chat extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextArea clientArea;
     private javax.swing.JButton connectButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField nickname;
     private javax.swing.JButton sendButton;
+    private javax.swing.JTextArea userArea;
     private javax.swing.JTextField userText;
     // End of variables declaration//GEN-END:variables
 }
