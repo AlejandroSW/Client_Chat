@@ -3,6 +3,7 @@ package client_chat;
 import java.awt.*;
 import java.io.*;
 import java.net.*;
+import java.util.*;
 import javax.swing.*;
 /**
  *
@@ -28,6 +29,20 @@ public class Client_Chat extends javax.swing.JFrame {
             output = new ObjectOutputStream(connection.getOutputStream());
             output.flush();
             input = new ObjectInputStream(connection.getInputStream());
+            
+            //Create anonymous nickname if not entered manually
+            if(username.getText().equals("nickname"))
+            {
+                String anon = "anon";
+                Random generator = new Random(); 
+                int a = generator.nextInt(999);
+                String num = String.valueOf(a);
+                anon=anon.concat(num);
+                username.setText(anon);
+                username.setEditable(false);
+            }  
+            sendMessage("Welcome");
+            
             ListenThread();
         } catch (IOException ex) {
             
@@ -67,6 +82,7 @@ public class Client_Chat extends javax.swing.JFrame {
     private void sendMessage(String message) {
         
         try{
+            message = " " + username.getText() + ": " + message;
             output.writeObject(message);
             output.flush();
         }catch(IOException ioException){
@@ -77,7 +93,9 @@ public class Client_Chat extends javax.swing.JFrame {
     private void closeConnection() {
         
         sendMessage("is Disconnecting ");
+        username.setText("nickname");
         userArea.append(" Closing connection... \n ");
+        username.setEditable(false);
         userText.setEditable(false);
         try{
             output.close();
@@ -87,7 +105,6 @@ public class Client_Chat extends javax.swing.JFrame {
             
         }
     }
-
     
     public Client_Chat() {
         initComponents();
@@ -103,7 +120,7 @@ public class Client_Chat extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         userArea = new javax.swing.JTextArea();
         userText = new javax.swing.JTextField();
-        nickname = new javax.swing.JTextField();
+        username = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -127,13 +144,14 @@ public class Client_Chat extends javax.swing.JFrame {
         userArea.setRows(5);
         jScrollPane1.setViewportView(userArea);
 
+        userText.setEditable(false);
         userText.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 userTextActionPerformed(evt);
             }
         });
 
-        nickname.setText("nickname");
+        username.setText("nickname");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -148,7 +166,7 @@ public class Client_Chat extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
-                                .addComponent(nickname, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(username, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(userText))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -164,7 +182,7 @@ public class Client_Chat extends javax.swing.JFrame {
                     .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(connectButton)
-                        .addComponent(nickname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(username, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 390, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -226,9 +244,9 @@ public class Client_Chat extends javax.swing.JFrame {
     private javax.swing.JButton connectButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField nickname;
     private javax.swing.JButton sendButton;
     private javax.swing.JTextArea userArea;
     private javax.swing.JTextField userText;
+    private javax.swing.JTextField username;
     // End of variables declaration//GEN-END:variables
 }
