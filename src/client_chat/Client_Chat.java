@@ -11,24 +11,39 @@ import javax.swing.*;
  */
 public class Client_Chat extends javax.swing.JFrame {
 
+    private Socket connection;
     private ObjectOutputStream output;
     private ObjectInputStream input;
-    private final String serverIP = "localhost";
     private final int port = 2222;
-    private Socket connection;
+    private final String serverIP = "localhost";
+    /*private Socket connection2;
+    private ObjectOutputStream output2;
+    private InputStreamReader input2;
+    private final int port2 = 2223;*/    
     
     //Start comunication with the server
     public void clientStart() {
-
-        //Connect to the server
-        userArea.append(" Attempting connection... \n");
         
         try {
+            //Connect to the server
+            userArea.append(" Attempting connection... \n");
             connection = new Socket(InetAddress.getByName(serverIP),port);
             userArea.append(" Connected to: " + connection.getInetAddress().getHostName() + "\n");
+            
+            //Connect to command server socket
+            /*userArea.append(" Attempting command connection... \n");
+            connection2 = new Socket(InetAddress.getByName(serverIP),port2);
+            userArea.append(" Connected to: " + connection2.getInetAddress().getHostName() + "\n");*/
+            
+            //Create output and input streams for the messaging socket
             output = new ObjectOutputStream(connection.getOutputStream());
             output.flush();
             input = new ObjectInputStream(connection.getInputStream());
+            
+            //Create output streams for the command socket
+            /*output2 = new ObjectOutputStream(connection2.getOutputStream());
+            output2.flush();
+            input2 = new InputStreamReader(connection2.getInputStream());*/
             
             //Create anonymous nickname if not entered manually
             if(username.getText().equals("nickname"))
@@ -40,10 +55,11 @@ public class Client_Chat extends javax.swing.JFrame {
                 anon=anon.concat(num);
                 username.setText(anon);
                 username.setEditable(false);
-            }  
-            sendMessage("Welcome");
+            }
             
-            ListenThread();
+            //Send initial message for server to resolve nickname
+            sendMessage("Welcome");            
+            ListenThread();           
         } catch (IOException ex) {
             
         }
@@ -57,10 +73,11 @@ public class Client_Chat extends javax.swing.JFrame {
     private class ReceiveMessage implements Runnable {
         
         @Override
-        public void run() {
+        public void run() 
+        {            
             String message;
-
             userText.setEditable(true);
+            
             try {
                 while ((message = (String) input.readObject()) != null)              
                 {
@@ -79,8 +96,7 @@ public class Client_Chat extends javax.swing.JFrame {
 
     }
     
-    private void sendMessage(String message) {
-        
+    private void sendMessage(String message) {        
         try{
             message = " " + username.getText() + ": " + message;
             output.writeObject(message);
@@ -90,17 +106,33 @@ public class Client_Chat extends javax.swing.JFrame {
         }
     }
     
-    private void closeConnection() {
-        
-        sendMessage("is Disconnecting ");
-        username.setText("nickname");
-        userArea.append(" Closing connection... \n ");
-        username.setEditable(false);
-        userText.setEditable(false);
+    /*private void sendCommand(String message) {    
         try{
+            output2.writeObject(message);
+            output2.flush();
+        }catch(IOException ioException){
+            
+        }
+    }*/
+    
+    private void closeConnection() {        
+        sendMessage("is Disconnecting ");
+        //sendCommand("Disconnect");
+        userArea.append(" Closing connection... \n ");
+        username.setText("nickname");
+        username.setEditable(true);
+        userText.setEditable(false);
+        
+        try{
+            //Close message streams and socket
             output.close();
             input.close();
             connection.close();
+            
+            //Close command streams and socket
+            /*output2.close();
+            input2.close();
+            connection2.close();*/            
         }catch(IOException ioException){
             
         }
@@ -210,16 +242,17 @@ public class Client_Chat extends javax.swing.JFrame {
 
     private void sendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendButtonActionPerformed
         sendMessage(userText.getText());
+        //sendCommand("Chat");
         userText.setText("");
     }//GEN-LAST:event_sendButtonActionPerformed
 
     private void userTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userTextActionPerformed
         sendMessage(userText.getText());
+        //sendCommand("Chat");
         userText.setText("");
     }//GEN-LAST:event_userTextActionPerformed
 
     public static void main(String args[]) {
-
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
