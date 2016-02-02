@@ -16,10 +16,6 @@ public class Client_Chat extends javax.swing.JFrame {
     private ObjectInputStream input;
     private final int port = 2222;
     private final String serverIP = "localhost";
-    /*private Socket connection2;
-    private ObjectOutputStream output2;
-    private InputStreamReader input2;
-    private final int port2 = 2223;*/    
     
     //Start comunication with the server
     public void clientStart() {
@@ -30,20 +26,10 @@ public class Client_Chat extends javax.swing.JFrame {
             connection = new Socket(InetAddress.getByName(serverIP),port);
             userArea.append(" Connected to: " + connection.getInetAddress().getHostName() + "\n");
             
-            //Connect to command server socket
-            /*userArea.append(" Attempting command connection... \n");
-            connection2 = new Socket(InetAddress.getByName(serverIP),port2);
-            userArea.append(" Connected to: " + connection2.getInetAddress().getHostName() + "\n");*/
-            
             //Create output and input streams for the messaging socket
             output = new ObjectOutputStream(connection.getOutputStream());
             output.flush();
             input = new ObjectInputStream(connection.getInputStream());
-            
-            //Create output streams for the command socket
-            /*output2 = new ObjectOutputStream(connection2.getOutputStream());
-            output2.flush();
-            input2 = new InputStreamReader(connection2.getInputStream());*/
             
             //Create anonymous nickname if not entered manually
             if(username.getText().equals("nickname"))
@@ -106,15 +92,6 @@ public class Client_Chat extends javax.swing.JFrame {
         }
     }
     
-    /*private void sendCommand(String message) {    
-        try{
-            output2.writeObject(message);
-            output2.flush();
-        }catch(IOException ioException){
-            
-        }
-    }*/
-    
     private void closeConnection() {        
         sendMessage("is Disconnecting ");
         //sendCommand("Disconnect");
@@ -127,12 +104,7 @@ public class Client_Chat extends javax.swing.JFrame {
             //Close message streams and socket
             output.close();
             input.close();
-            connection.close();
-            
-            //Close command streams and socket
-            /*output2.close();
-            input2.close();
-            connection2.close();*/            
+            connection.close();        
         }catch(IOException ioException){
             
         }
