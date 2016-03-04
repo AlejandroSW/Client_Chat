@@ -100,7 +100,7 @@ public class Client_Chat extends javax.swing.JFrame {
     
     private void closeConnection() { 
 	
-        sendMessage(" DISCONNECT ", " is Disconnecting...");
+        sendMessage(" DISCONNECT ", "is Disconnecting...");
         userArea.append(" Closing connection... \n ");
         username.setText("nickname");
         username.setEditable(true);
