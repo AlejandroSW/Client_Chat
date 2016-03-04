@@ -43,8 +43,6 @@ public class Client_Chat extends javax.swing.JFrame {
                 username.setEditable(false);
             }
             
-            //Send initial message for server to resolve nickname
-            sendMessage(" CONNECT ", "Has connected!");            
             ListenThread();           
         } catch (IOException ex) {
             
@@ -72,8 +70,7 @@ public class Client_Chat extends javax.swing.JFrame {
                         
                     if (data[0].equals(" SERVER.DISCONNECT "))
                     {
-                        userArea.append(data[1]);
-                        userText.setEditable(false);
+                        userArea.append(data[1] + "\n");
                         connectButton.setText("Connect");
                         closeConnection();
                     }else
@@ -98,9 +95,8 @@ public class Client_Chat extends javax.swing.JFrame {
         }
     }
     
-    private void closeConnection() { 
-	
-        sendMessage(" DISCONNECT ", "is Disconnecting...");
+    private void closeConnection() {
+        
         userArea.append(" Closing connection... \n ");
         username.setText("nickname");
         username.setEditable(true);
@@ -207,11 +203,13 @@ public class Client_Chat extends javax.swing.JFrame {
 
     private void connectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectButtonActionPerformed
         switch (connectButton.getText()) {
-            case "Connect":
+            case "Connect":  
                 clientStart();
+                sendMessage(" CONNECT ", "Has connected!"); 
                 connectButton.setText("Disconnect");
                 break;
             case "Disconnect":
+                sendMessage(" DISCONNECT ", "is Disconnecting...");
                 closeConnection();
                 connectButton.setText("Connect");
                 break;    
