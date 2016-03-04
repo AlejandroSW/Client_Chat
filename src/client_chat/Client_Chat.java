@@ -75,7 +75,7 @@ public class Client_Chat extends javax.swing.JFrame {
                         closeConnection();
                     }else
                     {
-                        userArea.append(data[1] + ": " + data[2] + "\n");
+                        userArea.append(" " + data[1] + ": " + data[2] + "\n");
                     }
                 }
             } catch (ClassNotFoundException | IOException ex) {
@@ -87,7 +87,7 @@ public class Client_Chat extends javax.swing.JFrame {
     
     private void sendMessage(String command, String message) {        
         try{
-            message = command + ": " + username.getText() + ": " + message;
+            message = command + ":" + username.getText() + ":" + message;
             output.writeObject(message);
             output.flush();
         }catch(IOException ioException){
