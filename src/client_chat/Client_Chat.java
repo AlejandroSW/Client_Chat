@@ -23,7 +23,7 @@ public class Client_Chat extends javax.swing.JFrame {
         try {
             //Connect to the server
             userArea.append(" Attempting connection... \n");
-            connection = new Socket(InetAddress.getByName(serverIP),port);
+            connection = new Socket(InetAddress.getByName(serverIP),port); 
             userArea.append(" Connected to: " + connection.getInetAddress().getHostName() + "\n");
             
             //Create output and input streams for the messaging socket
@@ -90,7 +90,7 @@ public class Client_Chat extends javax.swing.JFrame {
             message = command + ":" + username.getText() + ":" + message;
             output.writeObject(message);
             output.flush();
-        }catch(IOException ioException){
+        }catch(IOException ex){
             
         }
     }
@@ -107,7 +107,7 @@ public class Client_Chat extends javax.swing.JFrame {
             output.close();
             input.close();
             connection.close();        
-        }catch(IOException ioException){
+        }catch(IOException ex){
             
         }
     }
@@ -206,7 +206,13 @@ public class Client_Chat extends javax.swing.JFrame {
             case "Connect":  
                 clientStart();
                 sendMessage(" CONNECT ", "Has connected!"); 
-                connectButton.setText("Disconnect");
+                if (connection.isClosed())
+                {
+                    userArea.append(" Server unreachable... \n");
+                }else if(connection.isConnected())
+                {
+                    connectButton.setText("Disconnect");
+                }
                 break;
             case "Disconnect":
                 sendMessage(" DISCONNECT ", "is Disconnecting...");
