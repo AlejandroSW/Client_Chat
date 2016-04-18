@@ -66,7 +66,9 @@ public class Client_Chat extends javax.swing.JFrame {
             try {
                 while ((message = (String) input.readObject()) != null)              
                 {
-                    data = message.split(":");
+                    //This statement splits the whole message into 3 major componets
+                    //Client Service / Nickname / Message
+                    data = message.split(":",3);
                         
                     if (data[0].equals(" SERVER.DISCONNECT "))
                     {
